@@ -8,11 +8,13 @@ This solver computes a **steady solution**. Its iteration coordinate is artifici
 
 ## Validated results
 
-See **[the numerical report](results/REPORT.md)** for the saved-state verification, independent DNS comparison, cutoff/timestep/scale/relaxation checks, and published Re=100 benchmarks. The complete result files, local Fock states, parameters, histories, plots, and source hashes are included in [results](results/).
+See **[the numerical report](results/REPORT.md)** for the saved-state verification, independent DNS comparison, absolute and relative L2 error norms, cutoff/timestep/scale/relaxation checks, and published Re=100 benchmarks. The production boson cutoff is **N_b=12** (occupations 0–12, **13 local coefficients**); the cutoff check uses N_b=16. The complete result files, local Fock states, parameters, histories, plots, and source hashes are included in [results](results/).
 
 ![Mean-field and DNS centerlines](results/centerlines.png)
 
-![Cavity fields and DNS error](results/cavity_fields.png)
+![Mean-field and DNS streamfunction, vorticity, and absolute errors](results/cavity_fields.png)
+
+The field comparison shows mean field and DNS32 on shared color scales, with separate absolute-error panels for streamfunction and vorticity. [Download the comparison as PDF](results/cavity_fields.pdf). L2 errors in the report use interior nodes and explicitly distinguish the Euclidean norm, the mesh-weighted spatial norm, and the relative norm.
 
 The mean-field result is checked against an independently written DNS on the same grid, and DNS on nested 63×63 and 125×125 grids estimates spatial error. Centerline velocities and the primary streamfunction minimum are also checked against [Ghia, Ghia & Shin (1982)](https://doi.org/10.1016/0021-9991(82)90058-4). Agreement with the matched DNS verifies the bosonic implementation; the 32×32 solution still has finite spatial error.
 

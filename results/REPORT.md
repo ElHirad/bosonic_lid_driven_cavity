@@ -2,6 +2,8 @@
 
 The production solution evolves 1,800 local Fock vectors (900 streamfunction and 900 vorticity sites). The 32×32 grid includes walls. The lid moves right at unit speed, all other walls are stationary. DNS and published values are used only in this validation directory, after the mean-field run.
 
+**Production boson cutoff: N_b=12**, occupations 0,…,12, so each local Fock vector has **13 coefficients**. The separate cutoff-convergence run uses N_b=16 (17 coefficients). DNS has no boson cutoff.
+
 ## Independent checks on the saved kets
 
 - Both steady equations pass a maximum absolute residual tolerance of 1e-7: streamfunction 3.028237e-08; vorticity 9.965612e-08.
@@ -15,6 +17,20 @@ The production solution evolves 1,800 local Fock vectors (900 streamfunction and
 ## Independent DNS and numerical sensitivity
 
 DNS separately integrates the physical vorticity equation using SSPRK3 and solves its own Dirichlet Poisson problem with sine transforms at each stage. It starts from a quiescent interior. The matched 32×32 comparison isolates the bosonic calculation from spatial discretization error.
+
+### L2 errors: production mean field versus DNS32
+
+For e=f_MF−f_DNS, the absolute discrete norm is ||e||₂=√Σ|eᵢⱼ|². The spatial norm is ||e||L2,h=√(h²Σ|eᵢⱼ|²)=h||e||₂ with h=1/31. Relative L2 is ||e||₂/||f_DNS||₂; the h factors cancel. Sums include the 30×30 interior nodes only. For velocity, sum both u and v components. All values use nondimensional fields, and the maximum absolute error is the largest individual component error.
+
+| Field | Absolute discrete L2 | Spatial L2 (h-weighted) | Relative L2 | Max absolute error |
+|---|---:|---:|---:|---:|
+| Streamfunction ψ | 5.438106e-08 | 1.754228e-09 | 4.232467e-08 | 4.659759e-09 |
+| Vorticity ω | 1.888580e-06 | 6.092192e-08 | 2.220449e-08 | 1.518056e-07 |
+| Horizontal velocity u | 2.104844e-07 | 6.789819e-09 | 3.806969e-08 | 1.512989e-08 |
+| Vertical velocity v | 1.893160e-07 | 6.106969e-09 | 4.279824e-08 | 1.494641e-08 |
+| Velocity vector (u,v) | 2.830976e-07 | 9.132180e-09 | 3.998173e-08 | 1.512989e-08 |
+
+### Numerical sensitivity
 
 | Comparison | Velocity relative L2 | Interior vorticity relative L2 |
 |---|---:|---:|
@@ -46,7 +62,9 @@ The 63×63 and 125×125 DNS grids halve the spacing successively from 32×32. Th
 
 ![Centerline comparison](centerlines.png)
 
-![Cavity fields](cavity_fields.png)
+![Mean-field and DNS streamfunction, vorticity, and errors](cavity_fields.png)
+
+The first two columns use identical contour levels and color limits for mean field and DNS32. The last column shows absolute differences with separate error color scales. Full fields, including wall values, are plotted; error norms above use interior nodes. [Download the figure as PDF](cavity_fields.pdf).
 
 ![Convergence](convergence.png)
 

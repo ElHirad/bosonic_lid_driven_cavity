@@ -1,5 +1,13 @@
 {
   "passed": true,
+  "boson_cutoff": 12,
+  "local_fock_dimension": 13,
+  "error_norm_definition": {
+    "domain": "interior nodes only; velocity includes both u and v",
+    "absolute_l2": "sqrt(sum(abs(MF-DNS)**2))",
+    "spatial_l2": "sqrt(h*h*sum(abs(MF-DNS)**2)), h=1/(n-1)",
+    "relative_l2": "absolute_l2 / sqrt(sum(abs(reference)**2))"
+  },
   "verification": {
     "mf32": {
       "verified": true,
@@ -84,22 +92,32 @@
   },
   "mean_field_vs_dns32": {
     "psi": {
+      "absolute_l2": 5.4381060471290814e-08,
+      "spatial_l2": 1.7542277571384133e-09,
       "relative_l2": 4.232467236552268e-08,
       "maximum_absolute": 4.659759259006968e-09
     },
     "omega": {
+      "absolute_l2": 1.8885795238128553e-06,
+      "spatial_l2": 6.092192012299533e-08,
       "relative_l2": 2.220449121617054e-08,
       "maximum_absolute": 1.518056473859275e-07
     },
     "u": {
+      "absolute_l2": 2.1048437887868995e-07,
+      "spatial_l2": 6.789818673506127e-09,
       "relative_l2": 3.806968813878891e-08,
       "maximum_absolute": 1.512988953566996e-08
     },
     "v": {
+      "absolute_l2": 1.8931602955493371e-07,
+      "spatial_l2": 6.106968695320442e-09,
       "relative_l2": 4.279823719188206e-08,
       "maximum_absolute": 1.494640747279341e-08
     },
     "velocity": {
+      "absolute_l2": 2.8309756763065357e-07,
+      "spatial_l2": 9.132179600988825e-09,
       "relative_l2": 3.9981729555969196e-08,
       "maximum_absolute": 1.512988953566996e-08
     }
@@ -107,88 +125,128 @@
   "sensitivity": {
     "mf32_cutoff16": {
       "psi": {
+        "absolute_l2": 0.0,
+        "spatial_l2": 0.0,
         "relative_l2": 0.0,
         "maximum_absolute": 0.0
       },
       "omega": {
+        "absolute_l2": 0.0,
+        "spatial_l2": 0.0,
         "relative_l2": 0.0,
         "maximum_absolute": 0.0
       },
       "u": {
+        "absolute_l2": 0.0,
+        "spatial_l2": 0.0,
         "relative_l2": 0.0,
         "maximum_absolute": 0.0
       },
       "v": {
+        "absolute_l2": 0.0,
+        "spatial_l2": 0.0,
         "relative_l2": 0.0,
         "maximum_absolute": 0.0
       },
       "velocity": {
+        "absolute_l2": 0.0,
+        "spatial_l2": 0.0,
         "relative_l2": 0.0,
         "maximum_absolute": 0.0
       }
     },
     "mf32_half_dt": {
       "psi": {
+        "absolute_l2": 1.8008765530295023e-12,
+        "spatial_l2": 5.809279203320975e-14,
         "relative_l2": 1.4016187235506232e-12,
         "maximum_absolute": 1.4804824033376462e-13
       },
       "omega": {
+        "absolute_l2": 2.1323160303017464e-10,
+        "spatial_l2": 6.878438807424988e-12,
         "relative_l2": 2.50701609122273e-12,
         "maximum_absolute": 7.368861076884059e-11
       },
       "u": {
+        "absolute_l2": 8.71117527779157e-12,
+        "spatial_l2": 2.810056541223087e-13,
         "relative_l2": 1.5755645690329802e-12,
         "maximum_absolute": 1.6972378363844243e-12
       },
       "v": {
+        "absolute_l2": 6.972042049156875e-12,
+        "spatial_l2": 2.2490458223086692e-13,
         "relative_l2": 1.5761534779813151e-12,
         "maximum_absolute": 1.0034750808074477e-12
       },
       "velocity": {
+        "absolute_l2": 1.1157685470366095e-11,
+        "spatial_l2": 3.5992533775374497e-13,
         "relative_l2": 1.575794433325119e-12,
         "maximum_absolute": 1.6972378363844243e-12
       }
     },
     "mf32_half_scales": {
       "psi": {
+        "absolute_l2": 5.696541203281721e-12,
+        "spatial_l2": 1.8375939365424907e-13,
         "relative_l2": 4.433606954660848e-12,
         "maximum_absolute": 4.682365606356598e-13
       },
       "omega": {
+        "absolute_l2": 6.723617626505237e-10,
+        "spatial_l2": 2.1689089117758827e-11,
         "relative_l2": 7.905121633631422e-12,
         "maximum_absolute": 2.3034019136503048e-10
       },
       "u": {
+        "absolute_l2": 2.7541782103692496e-11,
+        "spatial_l2": 8.884445839900805e-13,
         "relative_l2": 4.981400863467138e-12,
         "maximum_absolute": 5.3534433830382255e-12
       },
       "v": {
+        "absolute_l2": 2.2058804221679496e-11,
+        "spatial_l2": 7.115743297315966e-13,
         "relative_l2": 4.986783032714717e-12,
         "maximum_absolute": 3.1721292259589973e-12
       },
       "velocity": {
+        "absolute_l2": 3.528654991831394e-11,
+        "spatial_l2": 1.1382758038165785e-12,
         "relative_l2": 4.983502096398815e-12,
         "maximum_absolute": 5.3534433830382255e-12
       }
     },
     "mf32_relax005": {
       "psi": {
+        "absolute_l2": 9.853728816671702e-08,
+        "spatial_l2": 3.1786221989263553e-09,
         "relative_l2": 7.669138000049871e-08,
         "maximum_absolute": 8.630636649797907e-09
       },
       "omega": {
+        "absolute_l2": 3.3823001823536716e-06,
+        "spatial_l2": 1.0910645749527973e-07,
         "relative_l2": 3.9766530204747786e-08,
         "maximum_absolute": 2.698191690075902e-07
       },
       "u": {
+        "absolute_l2": 3.9403634854566946e-07,
+        "spatial_l2": 1.2710849953086111e-08,
         "relative_l2": 7.12681917057095e-08,
         "maximum_absolute": 2.8822406572537318e-08
       },
       "v": {
+        "absolute_l2": 3.454194734976327e-07,
+        "spatial_l2": 1.1142563661213957e-08,
         "relative_l2": 7.808818430485606e-08,
         "maximum_absolute": 2.738651527778302e-08
       },
       "velocity": {
+        "absolute_l2": 5.240031074779863e-07,
+        "spatial_l2": 1.6903326047676977e-08,
         "relative_l2": 7.400470124399215e-08,
         "maximum_absolute": 2.8822406572537318e-08
       }
@@ -247,44 +305,64 @@
   "dns_refinement": {
     "32_vs_63": {
       "psi": {
+        "absolute_l2": 0.04437775897621664,
+        "spatial_l2": 0.0014315406121360205,
         "relative_l2": 0.03350468372880812,
         "maximum_absolute": 0.0033443470063564823
       },
       "omega": {
+        "absolute_l2": 6.207699606623022,
+        "spatial_l2": 0.20024837440719426,
         "relative_l2": 0.07089020311879389,
         "maximum_absolute": 2.8885667975170684
       },
       "u": {
+        "absolute_l2": 0.2507063494190328,
+        "spatial_l2": 0.008087301594162348,
         "relative_l2": 0.04480495232720988,
         "maximum_absolute": 0.11772492181640509
       },
       "v": {
+        "absolute_l2": 0.24227164540720084,
+        "spatial_l2": 0.00781521436797422,
         "relative_l2": 0.052396701392633006,
         "maximum_absolute": 0.06719240195016468
       },
       "velocity": {
+        "absolute_l2": 0.3486391025219785,
+        "spatial_l2": 0.011246422661999307,
         "relative_l2": 0.04803031429165916,
         "maximum_absolute": 0.11772492181640509
       }
     },
     "63_vs_125": {
       "psi": {
+        "absolute_l2": 0.021360025071732902,
+        "spatial_l2": 0.0003445165334150468,
         "relative_l2": 0.00800547281354244,
         "maximum_absolute": 0.0009250485581950635
       },
       "omega": {
+        "absolute_l2": 10.283997789839239,
+        "spatial_l2": 0.16587093209418127,
         "relative_l2": 0.04968029536766044,
         "maximum_absolute": 4.889202578719704
       },
       "u": {
+        "absolute_l2": 0.22497909749266584,
+        "spatial_l2": 0.003628695120849449,
         "relative_l2": 0.018464148481160663,
         "maximum_absolute": 0.11011105537522406
       },
       "v": {
+        "absolute_l2": 0.1788808696526293,
+        "spatial_l2": 0.002885175316977892,
         "relative_l2": 0.019089089949059695,
         "maximum_absolute": 0.062044013998958564
       },
       "velocity": {
+        "absolute_l2": 0.287426442479281,
+        "spatial_l2": 0.004635910362569049,
         "relative_l2": 0.018698846581347423,
         "maximum_absolute": 0.11011105537522406
       }
@@ -300,5 +378,5 @@
     "mf32_half_scales.npz": "53db9eef0820023ce4d53f885b57dc70b6064a58d8d78cd9e8fb6db632d8d751",
     "mf32_relax005.npz": "f981406972eac327deb37870a662dae6be618f3923c1288d83a676fa33b40a2f"
   },
-  "comparison_source_sha256": "fceadf00cb7f41d3f85c8cb77fe13770cc696243990d646764bab272ab17a8db"
+  "comparison_source_sha256": "1ff791868e013a1848de68f6852faa86516247d60e4eac5aeac93083aa038019"
 }

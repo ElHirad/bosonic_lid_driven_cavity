@@ -18,15 +18,26 @@ def read(path):
 
 
 def difference(candidate, reference):
+    """Interior-node Euclidean, mesh-weighted, and relative L2 errors.
+
+    The cavity grid is square, uniform, and includes the unit-square walls.
+    For a vector field the sum includes both velocity components.
+    """
+    h = 1/(candidate["psi"].shape[0]-1)
+
+    def norms(a, b):
+        error_l2 = float(np.linalg.norm(a-b))
+        return dict(absolute_l2=error_l2, spatial_l2=h*error_l2,
+                    relative_l2=float(error_l2/np.linalg.norm(b)),
+                    maximum_absolute=float(np.max(np.abs(a-b))))
+
     fields = {}
     for name in ("psi", "omega", "u", "v"):
         a, b = candidate[name][1:-1, 1:-1], reference[name][1:-1, 1:-1]
-        fields[name] = dict(relative_l2=float(np.linalg.norm(a-b)/np.linalg.norm(b)),
-                            maximum_absolute=float(np.max(np.abs(a-b))))
+        fields[name] = norms(a, b)
     a = np.stack([candidate[k][1:-1, 1:-1] for k in ("u", "v")])
     b = np.stack([reference[k][1:-1, 1:-1] for k in ("u", "v")])
-    fields["velocity"] = dict(relative_l2=float(np.linalg.norm(a-b)/np.linalg.norm(b)),
-                              maximum_absolute=float(np.max(np.abs(a-b))))
+    fields["velocity"] = norms(a, b)
     return fields
 
 
@@ -58,9 +69,11 @@ def benchmark_error(data, benchmark):
 
 def plots(directory, mf, dns, benchmark, comparisons):
     plt.rcParams.update({"font.size": 10, "figure.dpi": 140, "savefig.dpi": 180})
+    config = json.loads(str(mf["metadata_json"]))["config"]
+    cutoff = config["cutoff"]
     fig, axes = plt.subplots(1, 2, figsize=(10, 4.4), constrained_layout=True)
     for axis, component in zip(axes, ("u", "v")):
-        for data, label, style in ((mf, "Bosonic mean field, 32×32", "-"),
+        for data, label, style in ((mf, f"Mean field, 32×32, cutoff {cutoff}", "-"),
                                    (dns[32], "Independent DNS, 32×32", "--"),
                                    (dns[63], "DNS, 63×63", ":"),
                                    (dns[125], "DNS, 125×125", "-.")):
@@ -76,22 +89,31 @@ def plots(directory, mf, dns, benchmark, comparisons):
     fig.savefig(directory/"centerlines.pdf")
     plt.close(fig)
 
-    fig, axes = plt.subplots(1, 3, figsize=(13, 4), constrained_layout=True)
+    fig, axes = plt.subplots(2, 3, figsize=(13.5, 8.2), constrained_layout=True)
+    fig.suptitle(f"Steady cavity: 32×32, Re=100 · boson cutoff Nᵦ={cutoff} ({cutoff+1} local levels)",
+                 fontsize=14)
     x, y = mf["x"], mf["y"]
-    negative = np.linspace(mf["psi"].min()*0.98, -0.001, 15)
-    axes[0].contour(x, y, mf["psi"], levels=negative, colors="#264653", linewidths=0.9)
-    axes[0].streamplot(x, y, mf["u"], mf["v"], density=0.6, color="#2a9d8f", linewidth=0.5)
-    axes[0].set_title("Mean-field streamfunction and velocity")
-    limit = np.max(np.abs(mf["omega"]))
-    color = axes[1].pcolormesh(x, y, mf["omega"], cmap="RdBu_r", vmin=-limit, vmax=limit, shading="auto")
-    axes[1].contour(x, y, mf["omega"], levels=[-10, -5, -3, -1, 0, 1, 3, 5, 10], colors="k", linewidths=0.4)
-    fig.colorbar(color, ax=axes[1], label="Vorticity")
-    axes[1].set_title("Mean-field vorticity (full color range)")
-    error = np.hypot(mf["u"]-dns[32]["u"], mf["v"]-dns[32]["v"])
-    color = axes[2].pcolormesh(x, y, error, cmap="magma", shading="auto")
-    fig.colorbar(color, ax=axes[2], label="Velocity difference / lid speed")
-    axes[2].set_title("Mean field − independent DNS, 32×32")
-    for axis in axes:
+    for row, (key, label, symbol) in enumerate((("psi", "streamfunction", "ψ"),
+                                               ("omega", "vorticity", "ω"))):
+        a, b = mf[key], dns[32][key]
+        if key == "psi":
+            lower, upper, cmap = min(a.min(), b.min()), max(a.max(), b.max()), "viridis"
+            levels = np.linspace(lower*0.98, -0.001, 13)
+        else:
+            upper = max(np.max(np.abs(a)), np.max(np.abs(b)))
+            lower, cmap = -upper, "RdBu_r"
+            levels = [-10, -5, -3, -1, 0, 1, 3, 5, 10]
+        for col, (field, method) in enumerate(((a, "Mean field"), (b, "DNS"))):
+            color = axes[row, col].pcolormesh(x, y, field, cmap=cmap, vmin=lower, vmax=upper,
+                                             shading="auto")
+            axes[row, col].contour(x, y, field, levels=levels, colors="k", linewidths=0.4)
+            axes[row, col].set_title(f"{method}: {label} {symbol}")
+        fig.colorbar(color, ax=list(axes[row, :2]), label=symbol, shrink=0.85)
+        color = axes[row, 2].pcolormesh(x, y, np.abs(a-b), cmap="magma", vmin=0, shading="auto")
+        fig.colorbar(color, ax=axes[row, 2], label=f"|{symbol}MF − {symbol}DNS|", shrink=0.85)
+        relative = comparisons["mean_field_vs_dns32"][key]["relative_l2"]
+        axes[row, 2].set_title(f"Absolute difference |Δ{symbol}|\nInterior relative L2 = {relative:.3e}")
+    for axis in axes.flat:
         axis.set(xlabel="x", ylabel="y", aspect="equal", xlim=(0, 1), ylim=(0, 1))
     fig.savefig(directory/"cavity_fields.png")
     fig.savefig(directory/"cavity_fields.pdf")
@@ -161,7 +183,14 @@ def compare(directory):
         sampled = {k: dns[fine][k][::2, ::2] for k in ("psi", "omega", "u", "v")}
         refinement[f"{coarse}_vs_{fine}"] = difference(dns[coarse], sampled)
     assert refinement["63_vs_125"]["velocity"]["relative_l2"] < refinement["32_vs_63"]["velocity"]["relative_l2"]
-    metrics = dict(passed=True, verification=verified, mean_field_vs_dns32=matched,
+    cutoff = base_config["cutoff"]
+    metrics = dict(passed=True, boson_cutoff=cutoff, local_fock_dimension=cutoff+1,
+                   error_norm_definition={
+                       "domain": "interior nodes only; velocity includes both u and v",
+                       "absolute_l2": "sqrt(sum(abs(MF-DNS)**2))",
+                       "spatial_l2": "sqrt(h*h*sum(abs(MF-DNS)**2)), h=1/(n-1)",
+                       "relative_l2": "absolute_l2 / sqrt(sum(abs(reference)**2))"},
+                   verification=verified, mean_field_vs_dns32=matched,
                    sensitivity=sensitivity, ghia_re100=ghia, dns_refinement=refinement,
                    artifact_sha256={p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                     for p in sorted(directory.glob("*.npz"))},
@@ -174,6 +203,9 @@ def compare(directory):
              "The production solution evolves 1,800 local Fock vectors (900 streamfunction and 900 vorticity sites). "
              "The 32×32 grid includes walls. The lid moves right at unit speed, all other walls are stationary. "
              "DNS and published values are used only in this validation directory, after the mean-field run.", "",
+             f"**Production boson cutoff: N_b={cutoff}**, occupations 0,…,{cutoff}, "
+             f"so each local Fock vector has **{cutoff+1} coefficients**. "
+             "The separate cutoff-convergence run uses N_b=16 (17 coefficients). DNS has no boson cutoff.", "",
              "## Independent checks on the saved kets", "",
              f"- Both steady equations pass a maximum absolute residual tolerance of 1e-7: "
              f"streamfunction {base['poisson_residual']:.6e}; vorticity {base['vorticity_residual']:.6e}.",
@@ -190,6 +222,21 @@ def compare(directory):
              "DNS separately integrates the physical vorticity equation using SSPRK3 and solves its own "
              "Dirichlet Poisson problem with sine transforms at each stage. It starts from a quiescent interior. "
              "The matched 32×32 comparison isolates the bosonic calculation from spatial discretization error.", "",
+             "### L2 errors: production mean field versus DNS32", "",
+             "For e=f_MF−f_DNS, the absolute discrete norm is ||e||₂=√Σ|eᵢⱼ|². "
+             "The spatial norm is ||e||L2,h=√(h²Σ|eᵢⱼ|²)=h||e||₂ with h=1/31. "
+             "Relative L2 is ||e||₂/||f_DNS||₂; the h factors cancel. "
+             "Sums include the 30×30 interior nodes only. For velocity, sum both u and v components. "
+             "All values use nondimensional fields, and the maximum absolute error is the largest individual component error.", "",
+             "| Field | Absolute discrete L2 | Spatial L2 (h-weighted) | Relative L2 | Max absolute error |",
+             "|---|---:|---:|---:|---:|"]
+    for name, label in (("psi", "Streamfunction ψ"), ("omega", "Vorticity ω"),
+                        ("u", "Horizontal velocity u"), ("v", "Vertical velocity v"),
+                        ("velocity", "Velocity vector (u,v)")):
+        error = matched[name]
+        lines.append(f"| {label} | {error['absolute_l2']:.6e} | {error['spatial_l2']:.6e} | "
+                     f"{error['relative_l2']:.6e} | {error['maximum_absolute']:.6e} |")
+    lines += ["", "### Numerical sensitivity", "",
              "| Comparison | Velocity relative L2 | Interior vorticity relative L2 |",
              "|---|---:|---:|",
              f"| Mean field vs DNS32 | {matched['velocity']['relative_l2']:.6e} | {matched['omega']['relative_l2']:.6e} |"]
@@ -219,7 +266,12 @@ def compare(directory):
               "The centerline differences from the published Ghia table are not monotonic between 63×63 and 125×125; "
               "the decreasing nested-grid differences, rather than monotonic agreement with that table, are the spatial "
               "refinement check. The 32×32 primary streamfunction minimum differs from Ghia by about 3.16%.", "",
-              "![Centerline comparison](centerlines.png)", "", "![Cavity fields](cavity_fields.png)", "",
+              "![Centerline comparison](centerlines.png)", "",
+              "![Mean-field and DNS streamfunction, vorticity, and errors](cavity_fields.png)", "",
+              "The first two columns use identical contour levels and color limits for mean field and DNS32. "
+              "The last column shows absolute differences with separate error color scales. "
+              "Full fields, including wall values, are plotted; error norms above use interior nodes. "
+              "[Download the figure as PDF](cavity_fields.pdf).", "",
               "![Convergence](convergence.png)", "",
               "Exactly zero initial residuals/defects are omitted from logarithmic curves.", "",
               "## Reproduce", "", "From the repository root, install requirements and run:", "", "```bash",
@@ -231,7 +283,8 @@ def compare(directory):
               "NPZ files contain the saved states or DNS fields, settings, convergence history, and source hashes. "
               "comparison.json records result-file SHA-256 hashes and all numerical metrics.", ""]
     (directory/"REPORT.md").write_text("\n".join(lines))
-    print(json.dumps(dict(passed=True, mean_field_vs_dns32=matched, ghia_re100=ghia), indent=2))
+    print(json.dumps(dict(passed=True, boson_cutoff=cutoff, local_fock_dimension=cutoff+1,
+                         mean_field_vs_dns32=matched, ghia_re100=ghia), indent=2))
     return metrics
 
 
