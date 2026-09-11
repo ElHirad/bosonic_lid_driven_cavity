@@ -1,0 +1,15 @@
+{
+  "n": 32,
+  "reynolds": 100.0,
+  "dt": 0.005,
+  "steps": 7100,
+  "time": 35.5,
+  "tolerance": 1e-08,
+  "converged": true,
+  "vorticity_residual": 8.589410072090686e-09,
+  "poisson_residual": 1.6608936448392342e-13,
+  "elapsed_seconds": 4.533462475985289,
+  "method": "independent DNS: centered vorticity, SSPRK3, DST Poisson solve",
+  "initialization": "quiescent interior; unit lid; no mean-field state input",
+  "source_sha256": "7ef4f7ac6f176028b103cf70d189d91eff7750987f4a145fa6e7b2fd9bfaecb0"
+}

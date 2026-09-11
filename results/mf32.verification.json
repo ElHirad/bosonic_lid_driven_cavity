@@ -1,0 +1,16 @@
+{
+  "verified": true,
+  "n": 32,
+  "reynolds": 100.0,
+  "poisson_residual": 3.0282366392242466e-08,
+  "vorticity_residual": 9.96561164146037e-08,
+  "divergence_max": 3.065256382051018e-15,
+  "snapshot_coherent_defect": 2.0759072667038755e-12,
+  "snapshot_ceiling_probability": 2.9184853977670623e-76,
+  "psi_min": -0.10015914157167612,
+  "primary_vortex_grid_location": [
+    0.6129032258064516,
+    0.7419354838709677
+  ],
+  "checks": "saved kets, initialization, observables, walls, PDE residuals, divergence, quantum quality"
+}
