@@ -4,3 +4,8 @@ __pycache__/
 *.log
 *.tmp.npz
 .DS_Store
+results/**/checkpoint.npz
+results/**/run.lock
+results/**/status.json
+results/**/pilot*.npz
+results/**/pilot*.json

@@ -1,5 +1,26 @@
 # Bosonic mean-field lid-driven cavity
 
+## New calculation: 128×128, Re=1000
+
+The **128×128, Re=1000** case has been launched with boson cutoff **12** (13 local levels).
+It has **31,752 independent Fock vectors**, with walls included in the grid. This larger run
+uses checkpoints containing the actual quantum states. Independent DNS verification and
+streamfunction/vorticity plots are queued after successful mean-field convergence and
+saved-state verification. See [the launch notes](results/re1000_n128/LAUNCH_NOTES.md) for
+parameters, job IDs, and commands. This new case is **not yet reported as validated**;
+the completed Re=100 results below remain available.
+
+```bash
+python3 -m ldc_mean_field.run_case --directory new_results/re1000_n128
+# If interrupted, resume with the same parameters and source:
+python3 -m ldc_mean_field.run_case --directory new_results/re1000_n128 --resume
+# Only after the mean-field result converges:
+python3 -m validation.run_reference new_results/re1000_n128
+python3 -m validation.case new_results/re1000_n128
+```
+
+## Completed calculation: 32×32, Re=100
+
 A **32×32, Re=100** steady lid-driven cavity solver using the **streamfunction–vorticity formulation** and a product of explicit local bosonic Fock states. Both unknown fields are obtained by mean-field operator evolution. The production package uses no DNS calculation, direct Poisson inverse, pressure projection, MAC grid, MPS, or TDVP.
 
 The unit-square cavity has a right-moving lid of speed 1 and three stationary, no-slip walls. Here **32×32 means 32 points per direction including the walls**, with spacing 1/31. There are 30×30 independent sites for each field, giving **1,800 local Fock vectors**, each of dimension 13 at the default occupation cutoff 12. Boundary values are eliminated analytically into the operator coefficients.

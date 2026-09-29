@@ -47,15 +47,17 @@ def centerline(data, component):
     return np.array([np.interp(0.5, data["y"], column) for column in data["v"].T])
 
 
-def ghia_values():
-    path = Path(__file__).with_name("ghia_re100.csv")
+def ghia_values(reynolds=100):
+    if reynolds not in (100, 1000):
+        raise ValueError("published samples are available for Re=100 and Re=1000")
+    path = Path(__file__).with_name(f"ghia_re{int(reynolds)}.csv")
     with path.open() as file:
         rows = list(csv.DictReader(line for line in file if not line.startswith("#")))
     return {c: np.array([(float(r["coordinate"]), float(r["velocity"]))
                           for r in rows if r["component"] == c]) for c in ("u", "v")}
 
 
-def benchmark_error(data, benchmark):
+def benchmark_error(data, benchmark, reference_psi_min=-0.103423):
     result = {}
     for component in ("u", "v"):
         points, values = benchmark[component].T
@@ -63,24 +65,26 @@ def benchmark_error(data, benchmark):
         result[component] = dict(maximum_absolute=float(np.max(np.abs(numerical-values))),
                                  rms=float(np.sqrt(np.mean((numerical-values)**2))))
     result["psi_min"] = float(data["psi"].min())
-    result["psi_min_relative_error"] = float(abs(data["psi"].min()+0.103423)/0.103423)
+    result["psi_min_relative_error"] = float(abs(data["psi"].min()-reference_psi_min)/abs(reference_psi_min))
     return result
 
 
 def plots(directory, mf, dns, benchmark, comparisons):
     plt.rcParams.update({"font.size": 10, "figure.dpi": 140, "savefig.dpi": 180})
     config = json.loads(str(mf["metadata_json"]))["config"]
-    cutoff = config["cutoff"]
+    cutoff, n, reynolds = config["cutoff"], config["n"], config["reynolds"]
     fig, axes = plt.subplots(1, 2, figsize=(10, 4.4), constrained_layout=True)
     for axis, component in zip(axes, ("u", "v")):
-        for data, label, style in ((mf, f"Mean field, 32×32, cutoff {cutoff}", "-"),
-                                   (dns[32], "Independent DNS, 32×32", "--"),
-                                   (dns[63], "DNS, 63×63", ":"),
-                                   (dns[125], "DNS, 125×125", "-.")):
+        curves = [(mf, f"Mean field, {n}×{n}, cutoff {cutoff}", "-"),
+                  (dns[n], f"Independent DNS, {n}×{n}", "--")]
+        curves += [(data, f"DNS, {grid}×{grid}", style)
+                   for (grid, data), style in zip(((grid, data) for grid, data in sorted(dns.items()) if grid != n),
+                                                 (":", "-."))]
+        for data, label, style in curves:
             axis.plot(data["x"], centerline(data, component), style, label=label, lw=1.7)
         points, values = benchmark[component].T
         axis.scatter(points, values, facecolors="none", edgecolors="black", s=30,
-                     label="Ghia et al. (1982), Re=100", zorder=5)
+                     label=f"Ghia et al. (1982), Re={reynolds:g}", zorder=5)
         axis.set(xlabel="y" if component == "u" else "x", ylabel=f"{component} / lid speed",
                  title=f"{'Vertical' if component == 'u' else 'Horizontal'} centerline", xlim=(0, 1))
         axis.grid(alpha=0.2)
@@ -90,12 +94,12 @@ def plots(directory, mf, dns, benchmark, comparisons):
     plt.close(fig)
 
     fig, axes = plt.subplots(2, 3, figsize=(13.5, 8.2), constrained_layout=True)
-    fig.suptitle(f"Steady cavity: 32×32, Re=100 · boson cutoff Nᵦ={cutoff} ({cutoff+1} local levels)",
+    fig.suptitle(f"Steady cavity: {n}×{n}, Re={reynolds:g} · boson cutoff Nᵦ={cutoff} ({cutoff+1} local levels)",
                  fontsize=14)
     x, y = mf["x"], mf["y"]
     for row, (key, label, symbol) in enumerate((("psi", "streamfunction", "ψ"),
                                                ("omega", "vorticity", "ω"))):
-        a, b = mf[key], dns[32][key]
+        a, b = mf[key], dns[n][key]
         if key == "psi":
             lower, upper, cmap = min(a.min(), b.min()), max(a.max(), b.max()), "viridis"
             levels = np.linspace(lower*0.98, -0.001, 13)
@@ -111,7 +115,7 @@ def plots(directory, mf, dns, benchmark, comparisons):
         fig.colorbar(color, ax=list(axes[row, :2]), label=symbol, shrink=0.85)
         color = axes[row, 2].pcolormesh(x, y, np.abs(a-b), cmap="magma", vmin=0, shading="auto")
         fig.colorbar(color, ax=axes[row, 2], label=f"|{symbol}MF − {symbol}DNS|", shrink=0.85)
-        relative = comparisons["mean_field_vs_dns32"][key]["relative_l2"]
+        relative = comparisons[f"mean_field_vs_dns{n}"][key]["relative_l2"]
         axes[row, 2].set_title(f"Absolute difference |Δ{symbol}|\nInterior relative L2 = {relative:.3e}")
     for axis in axes.flat:
         axis.set(xlabel="x", ylabel="y", aspect="equal", xlim=(0, 1), ylim=(0, 1))
@@ -125,7 +129,7 @@ def plots(directory, mf, dns, benchmark, comparisons):
     for key, label in (("poisson_residual", "Streamfunction equation"),
                        ("vorticity_residual", "Vorticity equation")):
         axes[0].semilogy(tau, [r[key] if r[key] > 0 else np.nan for r in history], label=label)
-    axes[0].axhline(1e-7, color="k", linestyle=":", label="Acceptance tolerance")
+    axes[0].axhline(config["tolerance"], color="k", linestyle=":", label="Acceptance tolerance")
     axes[0].set(xlabel="Artificial iteration time τ", ylabel="Maximum absolute residual",
                 title="Steady-state convergence")
     axes[0].legend(fontsize=8)

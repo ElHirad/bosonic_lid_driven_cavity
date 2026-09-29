@@ -13,6 +13,18 @@ from validation.verify import verify
 
 
 class NumericalTests(unittest.TestCase):
+    def test_re1000_128_grid_polynomial_matches_independent_stencils(self):
+        n = 128
+        op = CavityOperators(n, 1000., 1000., 100000., 0.01)
+        alpha = np.random.default_rng(1000).normal(size=op.size)*1e-5
+        psi = np.zeros((n, n))
+        psi[1:-1, 1:-1] = 1000*alpha[:op.m].reshape(n-2, n-2)
+        interior = 100000*alpha[op.m:].reshape(n-2, n-2)
+        omega = walls(psi, interior, op.h)
+        expected = np.r_[0.01/1000*(laplacian(psi, op.h)+interior).ravel(),
+                         transport(psi, omega, op.h, 1000.).ravel()/100000]
+        np.testing.assert_allclose(op.generator(alpha), expected, atol=2e-13, rtol=2e-13)
+
     def test_polynomial_matches_independent_stencils_including_walls(self):
         rng = np.random.default_rng(13)
         for n in (5, 8, 32):
