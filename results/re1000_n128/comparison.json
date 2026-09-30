@@ -94,7 +94,7 @@
   },
   "postprocess_source_sha256": {
     "case.py": "6643e2685c6368a70c59d13ffd82a4df935842cd61cb2f08e3b812f8a37b9d04",
-    "compare.py": "088e00f144108652e68f0e48a116686c4c4a8c9c474c2ae59c9327703e21c52a",
+    "compare.py": "39bb742fe754c48180ee5231c41328c1bc392c8020dbef8049a4a14d41a93f8f",
     "verify.py": "ab242abbf90b77ad26a5b21c06cdca2eea9428f65ce80e2718b8a154c6848305"
   }
 }

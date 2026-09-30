@@ -114,8 +114,9 @@ def plots(directory, mf, dns, benchmark, comparisons):
         for col, (field, method) in enumerate(((a, "Mean field"), (b, "DNS"))):
             color = axes[row, col].pcolormesh(x, y, field, cmap=cmap, vmin=lower, vmax=upper,
                                              shading="auto")
-            widths = np.where(levels > 0, 0.65, 0.4) if key == "psi" else 0.4
-            axes[row, col].contour(x, y, field, levels=levels, colors="k", linewidths=widths)
+            styles = "dashed" if key == "psi" else None
+            axes[row, col].contour(x, y, field, levels=levels, colors="k", linewidths=0.4,
+                                   linestyles=styles)
             axes[row, col].set_title(f"{method}: {label} {symbol}")
         fig.colorbar(color, ax=list(axes[row, :2]), label=symbol, shrink=0.85)
         color = axes[row, 2].pcolormesh(x, y, np.abs(a-b), cmap="magma", vmin=0, shading="auto")
