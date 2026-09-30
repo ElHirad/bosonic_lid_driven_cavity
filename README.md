@@ -1,14 +1,22 @@
 # Bosonic mean-field lid-driven cavity
 
-## New calculation: 128×128, Re=1000
+## Completed calculation: 128×128, Re=1000
 
-The **128×128, Re=1000** case has been launched with boson cutoff **12** (13 local levels).
-It has **31,752 independent Fock vectors**, with walls included in the grid. This larger run
-uses checkpoints containing the actual quantum states. Independent DNS verification and
-streamfunction/vorticity plots are queued after successful mean-field convergence and
-saved-state verification. See [the launch notes](results/re1000_n128/LAUNCH_NOTES.md) for
-parameters, job IDs, and commands. This new case is **not yet reported as validated**;
-the completed Re=100 results below remain available.
+The **128×128, Re=1000** case converged with boson cutoff **12** (13 local levels).
+It has **31,752 independent Fock vectors**, with walls included in the grid. The mean-field
+calculation took 186,900 iterations (about 3 h 28 min); independent DNS took about 9 min 19 s.
+Both saved solutions pass verification. Relative L2 differences against DNS on the same grid
+are **8.75e-8 for streamfunction**, **4.68e-8 for vorticity**, and **9.94e-8 for velocity**.
+See the [completed report and plots](results/re1000_n128/REPORT.md) and
+[launch notes](results/re1000_n128/LAUNCH_NOTES.md). These are checks against DNS on the same
+grid; a refinement or cutoff/timestep convergence study for Re=1000 has not been performed.
+
+This run uses **coupled artificial-time relaxation**: both streamfunction and vorticity Fock
+states advance together. Streamfunction is not fully relaxed after each vorticity update.
+The Poisson residual is brought below tolerance at the final steady state. DNS remains a
+separate verification calculation.
+
+![128×128 Re=1000 mean-field and DNS fields](results/re1000_n128/cavity_fields.png)
 
 ```bash
 python3 -m ldc_mean_field.run_case --directory new_results/re1000_n128

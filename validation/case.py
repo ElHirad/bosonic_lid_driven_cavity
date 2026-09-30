@@ -73,9 +73,11 @@ def compare_case(directory):
              f"- Maximum discrete divergence: {validation['divergence_max']:.6e}.",
              f"- Worst sampled coherent-state defect: {meta['worst_sampled_quality']['coherent_defect']:.6e}; "
              f"ceiling probability: {meta['worst_sampled_quality']['ceiling_probability']:.6e}.",
-             f"- Measured evolution runtime: {meta['elapsed_seconds']/3600:.3f} CPU hours; DNS: "
-             f"{reference['elapsed_seconds']/3600:.3f} CPU hours.", "",
+             f"- Measured runtime on one CPU: mean field {meta['elapsed_seconds']/3600:.3f} hours; DNS "
+             f"{reference['elapsed_seconds']/3600:.3f} hours.", "",
              "The iteration coordinate is artificial time, not physical startup time. "
+             "The mean-field calculation advances streamfunction and vorticity kets together with coupled RK4; "
+             "it does not fully relax streamfunction after each individual vorticity update. "
              "Only residual-converged states are reported. The DNS integrates physical time with SSPRK3 and "
              "its own discrete sine-transform Poisson inverse.", "",
              "## L2 error against independent DNS", "",

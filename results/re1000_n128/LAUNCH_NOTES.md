@@ -2,6 +2,15 @@
 
 Submitted on **2026-09-29**. This document records the launch configuration, not a completed result.
 
+**Completion update, 2026-09-30:** the mean-field job completed successfully in 3 h 27 min
+52 s, converging after 186,900 iterations. DNS also converged in 559.45 s. Its original
+verification job was marked failed because the compute node lacked the Pillow plotting
+dependency, after saving the complete DNS solution. The environment was repaired and the
+saved solutions passed the comparison checks; neither fluid calculation needed rerunning.
+Postprocessing recovery job **11486253** completed successfully on a compute node in 13 s,
+regenerating the report and plots from those saved solutions.
+See the [completed report](REPORT.md) for errors and plots.
+
 | Setting | Value |
 |---|---|
 | Grid | 128×128 including walls; h=1/127 |

@@ -1,0 +1,100 @@
+{
+  "passed": true,
+  "n": 128,
+  "reynolds": 1000.0,
+  "boson_cutoff": 12,
+  "local_fock_dimension": 13,
+  "verification": {
+    "verified": true,
+    "n": 128,
+    "reynolds": 1000.0,
+    "poisson_residual": 9.98136004959349e-08,
+    "vorticity_residual": 6.513051875600695e-08,
+    "divergence_max": 1.2833050594407425e-14,
+    "snapshot_coherent_defect": 2.2152673717146334e-13,
+    "snapshot_ceiling_probability": 1.7417126269613536e-81,
+    "psi_min": -0.11541218447584972,
+    "primary_vortex_grid_location": [
+      0.5354330708661417,
+      0.5669291338582677
+    ],
+    "checks": "saved kets, initialization, observables, walls, PDE residuals, divergence, quantum quality"
+  },
+  "dns_verification": {
+    "poisson_residual": 5.801137348271368e-12,
+    "vorticity_residual": 9.910983145289265e-09
+  },
+  "mean_field_vs_dns128": {
+    "psi": {
+      "absolute_l2": 6.357749864473164e-07,
+      "spatial_l2": 5.006102255490681e-09,
+      "relative_l2": 8.745217861273404e-08,
+      "maximum_absolute": 1.4577655041425608e-08
+    },
+    "omega": {
+      "absolute_l2": 2.7627597978625284e-05,
+      "spatial_l2": 2.175401415639786e-07,
+      "relative_l2": 4.679486418377727e-08,
+      "maximum_absolute": 9.636755660125118e-07
+    },
+    "u": {
+      "absolute_l2": 2.6525230582930954e-06,
+      "spatial_l2": 2.08860083330165e-08,
+      "relative_l2": 1.0272458657777561e-07,
+      "maximum_absolute": 5.127823526906994e-08
+    },
+    "v": {
+      "absolute_l2": 2.411841955521735e-06,
+      "spatial_l2": 1.899088153954122e-08,
+      "relative_l2": 9.583478199612972e-08,
+      "maximum_absolute": 4.9983331334990666e-08
+    },
+    "velocity": {
+      "absolute_l2": 3.5850885893087026e-06,
+      "spatial_l2": 2.8229044010304746e-08,
+      "relative_l2": 9.942783737464811e-08,
+      "maximum_absolute": 5.127823526906994e-08
+    }
+  },
+  "benchmark": {
+    "mean_field": {
+      "u": {
+        "maximum_absolute": 0.014053584325090185,
+        "rms": 0.008266551546836776
+      },
+      "v": {
+        "maximum_absolute": 0.008116020289322956,
+        "rms": 0.005528005519958383
+      },
+      "psi_min": -0.11541218447584972,
+      "psi_min_relative_error": 0.021341786364255478
+    },
+    "dns": {
+      "u": {
+        "maximum_absolute": 0.014053586211909885,
+        "rms": 0.008266561046778044
+      },
+      "v": {
+        "maximum_absolute": 0.008116039625415405,
+        "rms": 0.005528023803720201
+      },
+      "psi_min": -0.11541216991805985,
+      "psi_min_relative_error": 0.02134190980963258
+    }
+  },
+  "error_norm_definition": {
+    "domain": "interior nodes; both components for velocity",
+    "absolute_l2": "sqrt(sum(abs(error)**2))",
+    "spatial_l2": "h*absolute_l2",
+    "relative_l2": "absolute_l2/norm(reference)"
+  },
+  "artifact_sha256": {
+    "mean_field.npz": "39540763d49d2caaf2f859fc40aab3e3cf58d35777963a648070c8a12c72441d",
+    "dns.npz": "3fe1b907a968e4353c99410d1e2f1504c447e4a5a8155434eab6e759e659f719"
+  },
+  "postprocess_source_sha256": {
+    "case.py": "6456ed3088a309e2af830ff2555cc3a5d39e360ded8efbbf437a534e5586803e",
+    "compare.py": "360c73bd003f49dbf4d172d5e5faadd490b3be115cd5c9dbc07af7ee195ee6ae",
+    "verify.py": "ab242abbf90b77ad26a5b21c06cdca2eea9428f65ce80e2718b8a154c6848305"
+  }
+}

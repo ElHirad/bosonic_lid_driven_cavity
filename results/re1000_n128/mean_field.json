@@ -1,0 +1,44 @@
+{
+  "config": {
+    "n": 128,
+    "reynolds": 1000.0,
+    "cutoff": 12,
+    "dt": 0.00125,
+    "max_time": 400.0,
+    "tolerance": 1e-07,
+    "relaxation": 0.01,
+    "psi_scale": 1000.0,
+    "omega_scale": 100000.0,
+    "check_every": 100
+  },
+  "converged": true,
+  "steps": 186900,
+  "elapsed_seconds": 12467.162527352571,
+  "method": "single-site Fock-vector RK4; coupled artificial-time relaxation",
+  "source_sha256": {
+    "__init__.py": "355c12db89d340f082c28f5197f568af2291c51872e6a93f5196d3de471f3a63",
+    "bosons.py": "6e0c0ca5a2f1ebc2bf4f163bb4df794f156eeaf2a622ff8e304801dbe834985c",
+    "operators.py": "e3f1f32b3c46f1548440cfff4adfb3f181e73029ae1cbd7c2f4504f0f02582fb",
+    "run_case.py": "e6ccdd66dc635267979aa51ef05b1bf95bcb9165d1dea2297177cc06b625f9d8",
+    "solver.py": "d37b4cc029b01f4d3f357109d4fc03c65c1abb68c553289e2393f21d679c8b76"
+  },
+  "python": "3.9.21",
+  "numpy": "1.23.5",
+  "scipy": "1.11.2",
+  "worst_sampled_quality": {
+    "coherent_defect": 2.2152673717146334e-13,
+    "ceiling_probability": 4.797702941545525e-81,
+    "norm_error": 2.220446049250313e-16,
+    "imaginary_amplitude": 0.0
+  },
+  "final": {
+    "step": 186900,
+    "pseudo_time": 233.625,
+    "poisson_residual": 9.981418598278054e-08,
+    "vorticity_residual": 6.513049106114666e-08,
+    "coherent_defect": 2.2152673717146334e-13,
+    "ceiling_probability": 1.7417126269613536e-81,
+    "norm_error": 2.220446049250313e-16,
+    "imaginary_amplitude": 0.0
+  }
+}
