@@ -105,7 +105,9 @@ def compare_case(directory):
               "![Mean-field and DNS fields](cavity_fields.png)", "",
               "![Centerlines](centerlines.png)", "", "![Convergence](convergence.png)", "",
               "[Field figure as PDF](cavity_fields.pdf). MF and DNS use shared field color scales; "
-              "difference panels have independent error scales. Walls are plotted but excluded from norms.", "",
+              "difference panels have independent error scales. Streamlines are contours of ψ, with shared "
+              "positive levels spaced geometrically to reveal the small corner vortices. "
+              "Walls are plotted but excluded from norms.", "",
               "## Reproduction", "", "See `hpc/re1000_n128.sbatch` and `hpc/verify_re1000_n128.sbatch`. "
               "To regenerate this report from completed saved states:", "", "```bash",
               f"python3 -m validation.case {directory.as_posix()}", "```", ""]

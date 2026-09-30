@@ -103,6 +103,10 @@ def plots(directory, mf, dns, benchmark, comparisons):
         if key == "psi":
             lower, upper, cmap = min(a.min(), b.min()), max(a.max(), b.max()), "viridis"
             levels = np.linspace(lower*0.98, -0.001, 13)
+            # Streamlines are psi contours. Small counter-rotating corner vortices
+            # have positive psi and disappear if only the primary vortex is sampled.
+            if upper > 0:
+                levels = np.r_[levels, 0., upper*np.geomspace(0.02, 0.95, 8)]
         else:
             upper = max(np.max(np.abs(a)), np.max(np.abs(b)))
             lower, cmap = -upper, "RdBu_r"
@@ -110,7 +114,8 @@ def plots(directory, mf, dns, benchmark, comparisons):
         for col, (field, method) in enumerate(((a, "Mean field"), (b, "DNS"))):
             color = axes[row, col].pcolormesh(x, y, field, cmap=cmap, vmin=lower, vmax=upper,
                                              shading="auto")
-            axes[row, col].contour(x, y, field, levels=levels, colors="k", linewidths=0.4)
+            widths = np.where(levels > 0, 0.65, 0.4) if key == "psi" else 0.4
+            axes[row, col].contour(x, y, field, levels=levels, colors="k", linewidths=widths)
             axes[row, col].set_title(f"{method}: {label} {symbol}")
         fig.colorbar(color, ax=list(axes[row, :2]), label=symbol, shrink=0.85)
         color = axes[row, 2].pcolormesh(x, y, np.abs(a-b), cmap="magma", vmin=0, shading="auto")

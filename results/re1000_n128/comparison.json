@@ -32,27 +32,27 @@
       "maximum_absolute": 1.4577655041425608e-08
     },
     "omega": {
-      "absolute_l2": 2.7627597978625284e-05,
-      "spatial_l2": 2.175401415639786e-07,
-      "relative_l2": 4.679486418377727e-08,
+      "absolute_l2": 2.7627597978625287e-05,
+      "spatial_l2": 2.1754014156397863e-07,
+      "relative_l2": 4.679486418377728e-08,
       "maximum_absolute": 9.636755660125118e-07
     },
     "u": {
-      "absolute_l2": 2.6525230582930954e-06,
-      "spatial_l2": 2.08860083330165e-08,
-      "relative_l2": 1.0272458657777561e-07,
+      "absolute_l2": 2.652523058293095e-06,
+      "spatial_l2": 2.0886008333016497e-08,
+      "relative_l2": 1.027245865777756e-07,
       "maximum_absolute": 5.127823526906994e-08
     },
     "v": {
-      "absolute_l2": 2.411841955521735e-06,
-      "spatial_l2": 1.899088153954122e-08,
-      "relative_l2": 9.583478199612972e-08,
+      "absolute_l2": 2.4118419555217352e-06,
+      "spatial_l2": 1.8990881539541223e-08,
+      "relative_l2": 9.583478199612975e-08,
       "maximum_absolute": 4.9983331334990666e-08
     },
     "velocity": {
-      "absolute_l2": 3.5850885893087026e-06,
-      "spatial_l2": 2.8229044010304746e-08,
-      "relative_l2": 9.942783737464811e-08,
+      "absolute_l2": 3.585088589308702e-06,
+      "spatial_l2": 2.822904401030474e-08,
+      "relative_l2": 9.94278373746481e-08,
       "maximum_absolute": 5.127823526906994e-08
     }
   },
@@ -93,8 +93,8 @@
     "dns.npz": "3fe1b907a968e4353c99410d1e2f1504c447e4a5a8155434eab6e759e659f719"
   },
   "postprocess_source_sha256": {
-    "case.py": "6456ed3088a309e2af830ff2555cc3a5d39e360ded8efbbf437a534e5586803e",
-    "compare.py": "360c73bd003f49dbf4d172d5e5faadd490b3be115cd5c9dbc07af7ee195ee6ae",
+    "case.py": "6643e2685c6368a70c59d13ffd82a4df935842cd61cb2f08e3b812f8a37b9d04",
+    "compare.py": "088e00f144108652e68f0e48a116686c4c4a8c9c474c2ae59c9327703e21c52a",
     "verify.py": "ab242abbf90b77ad26a5b21c06cdca2eea9428f65ce80e2718b8a154c6848305"
   }
 }

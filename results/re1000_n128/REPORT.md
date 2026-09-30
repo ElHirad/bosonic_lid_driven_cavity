@@ -44,7 +44,7 @@ This matched-grid comparison checks the bosonic calculation at this grid and Re.
 
 ![Convergence](convergence.png)
 
-[Field figure as PDF](cavity_fields.pdf). MF and DNS use shared field color scales; difference panels have independent error scales. Walls are plotted but excluded from norms.
+[Field figure as PDF](cavity_fields.pdf). MF and DNS use shared field color scales; difference panels have independent error scales. Streamlines are contours of ψ, with shared positive levels spaced geometrically to reveal the small corner vortices. Walls are plotted but excluded from norms.
 
 ## Reproduction
 
